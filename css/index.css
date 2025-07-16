@@ -1,0 +1,29 @@
+.video-article {
+  position: relative;
+}
+.video-container {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.mo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sence-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+}
+
+.sence {
+  opacity: 0;
+  position: absolute;
+}

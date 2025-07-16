@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GSAP ScrollTrigger Pin 예제</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 5000px;
+      }
+    </style>
+    <link href="/css/index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header id="navbar"></header>
+    <article class="video-article">
+      <div class="video-container">
+        <video
+          poster="assets/images/story/intro-poster-mo.jpg"
+          class="mo"
+          autoplay
+          loop
+          muted
+          playsinline
+        >
+          <source
+            src="https://download.kbanknow.com/brand/assets/videos/story/kbank-mo.mp4"
+            type="video/mp4"
+            class="mo"
+          />
+        </video>
+      </div>
+      <div class="sence-container">
+        <div class="sence sence-1">
+          <h1>TEST</h1>
+        </div>
+        <div class="sence sence-2">
+          <h1>TEST2</h1>
+        </div>
+      </div>
+    </article>
+
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+      fetch("navbar.html")
+        .then((response) => {
+          if (!response.ok) throw new Error("네비게이션 로딩 실패");
+          return response.text();
+        })
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+        })
+        .catch((error) => {
+          console.error(error);
+          document.getElementById("navbar").innerHTML =
+            "<p>네비게이션을 불러올 수 없습니다.</p>";
+        });
+    </script>
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+      const vh = window.innerHeight;
+      const duration = vh * 1.5; // 1.5배 길이 확보
+      const videoEnd = vh * 3.5; // 1.5배 길이 확보
+
+      const videotl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".video-container",
+          start: "top top",
+          end: `+=${videoEnd}`,
+          scrub: true,
+          pin: ".video-container",
+        },
+      });
+      videotl
+        .to(".mo", { borderRadius: "0px", scale: 1 })
+        .to(".mo", { borderRadius: "40px", scale: 0.8 });
+
+      const createSenceTimeLine = ({ index, target }) => {
+        const startScroll = index * duration;
+        const endScroll = startScroll + duration;
+
+        const senceTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".video-container",
+            start: startScroll,
+            end: endScroll,
+            pin: ".sence-container",
+            scrub: true,
+            markers: true,
+          },
+        });
+
+        senceTl
+
+          .to(target, { opacity: 1, duration: 0.3, immediateRender: false })
+          .to(target, { opacity: 0, duration: 0.8 });
+      };
+
+      document.querySelectorAll(".sence").forEach((el, idx) => {
+        createSenceTimeLine({ index: idx, target: el });
+        console.log(el, idx + 1);
+      });
+    </script>
+  </body>
+</html>
